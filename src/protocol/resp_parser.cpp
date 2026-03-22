@@ -8,9 +8,9 @@ namespace miniRedis {
     }
 
     bool RespParser::readLine(size_t& pos, std::string& out){
-        auto ccrlf = buffer_.find("\r\n", pos);
+        auto crlf = buffer_.find("\r\n", pos);
         if(crlf==std::string::npos)return false;
-        out = buffer_.sbstr(pos, crlf - pos);
+        out = buffer_.substr(pos, crlf - pos);
         pos = crlf + 2;
         return true;
     }
@@ -22,7 +22,7 @@ namespace miniRedis {
         std::string line;
         if(!readLine(pos, line)) return std::nullopt;
 
-        std::any count = std::stoi(line.substr(1));
+        std::int count = std::stoi(line.substr(1));
         if(count <= 0)return std::nullopt;
 
         Command cmd;

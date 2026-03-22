@@ -54,11 +54,11 @@ namespace miniRedis {
     void TcpServer::setNonBlocking(int fd) {
         // O_NONBLOCK: read or write return immediately instead of blocking
         // so that single thread = multiple clients
-        int flag s= fcntl(fd, F_GETFL, 0);
+        int flags= fcntl(fd, F_GETFL, 0);
         fcntl(fd, F_SETFL, flags | O_NONBLOCK);
     }
 
-    void TcPServer::addToEpoll(int fd, uint32_t events){
+    void TcpServer::addToEpoll(int fd, uint32_t events){
         epoll_event ev{};
         ev.events = events;
         ev.data.fd = fd;
