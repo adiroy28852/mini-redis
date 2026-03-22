@@ -22,11 +22,12 @@ namespace miniRedis {
         std::string line;
         if(!readLine(pos, line)) return std::nullopt;
 
-        std::int count = std::stoi(line.substr(1));
+        int count = std::stoi(line.substr(1));
         if(count <= 0)return std::nullopt;
 
         Command cmd;
         for(int i = 0; i<count; i++) {
+            auto token = parseBulkString(pos);
             if(!token) return std::nullopt;
 
             cmd.args.push_back(std::move(*token));
@@ -44,10 +45,10 @@ namespace miniRedis {
         int len = std::stoi(lenLine.substr(1));
         if (len == -1)return std::string{};
 
-        if(pos + len + 2 > buffer_.size())return std::nullopt;
+        if(pos + static_cast<size_t>(len) + 2 > buffer_.size())return std::nullopt;
 
-        std::string value = buffer_.substr(pos, len);
-        pos += len + 2;
+        std::string value = buffer_.substr(pos, static_cast<size_t>(len));
+        pos += static_cast<size_t>(len) + 2;
         return value;;
     }
 }

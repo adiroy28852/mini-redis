@@ -5,12 +5,17 @@
 
 namespace miniRedis {
     TcpServer::TcpServer(int port) {
-        server_fd = createAndBindSocket(port);
+        server_fd_ = createAndBindSocket(port);
         epoll_fd_ = epoll_create1(0);
 
         if(epoll_fd_ < 0)throw std::runtime_error("epoll_create1 failed");
-        addToEpoll(server_fd, EPOLLIN);
-        std::cout << "[mini-redis] Listening n port " << port << "\n";
+        addToEpoll(server_fd_, EPOLLIN);
+        std::cout << "[mini-redis] Listening on port " << port << "\n";
+    }
+
+    TcpServer::~TcpServer() {
+        if (server_fd_ >= 0) ::close(server_fd_);
+        if (epoll_fd_ >= 0) ::close(epoll_fd_);
     }
 
     int TcpServer::createAndBindSocket(int port){
@@ -58,13 +63,6 @@ namespace miniRedis {
         fcntl(fd, F_SETFL, flags | O_NONBLOCK);
     }
 
-    void TcpServer::addToEpoll(int fd, uint32_t events){
-        epoll_event ev{};
-        ev.events = events;
-        ev.data.fd = fd;
-        epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, fd, &ev);
-    }
-
     void TcpServer::run() {
         epoll_event events[MAX_EVENTS];
         while(true) {
@@ -91,5 +89,22 @@ namespace miniRedis {
         addToEpoll(client_fd, EPOLLIN | EPOLLET); //epollet is edge triggered
 
         std::cout<< "[+] client " << client_fd << " connected\n";
+    }
+
+    void TcpServer::handleClientData(int client_fd) {
+        char buf[BUFFER_SIZE];
+        ssize_t n = read(client_fd, buf, sizeof(buf));
+        if (n <= 0) {
+            removeClient(client_fd);
+            return;
+        }
+        // TODO: feed buf[0..n) into RespParser and dispatch commands
+        (void)n;
+    }
+
+    void TcpServer::removeClient(int client_fd) {
+        epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, client_fd, nullptr);
+        close(client_fd);
+        std::cout << "[-] client " << client_fd << " disconnected\n";
     }
 }

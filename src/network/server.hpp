@@ -14,15 +14,21 @@
 namespace miniRedis {
 
 
-    constexpr int PORT = 100;
-    constexpr int BACKLOG = 99;
+    constexpr int PORT = 6380;
+    constexpr int BACKLOG = 128;
     // depth
     constexpr int MAX_EVENTS = 1024;
     constexpr size_t BUFFER_SIZE = 4096;
 
     class TcpServer{
-        int server_fd_;
-        int epoll_fd_;
+    public:
+        explicit TcpServer(int port = PORT);
+        ~TcpServer();
+        void run();
+
+    private:
+        int server_fd_{-1};
+        int epoll_fd_{-1};
 
         int createAndBindSocket(int port);
         void setNonBlocking(int fd);
