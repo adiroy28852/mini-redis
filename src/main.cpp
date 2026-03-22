@@ -1,6 +1,6 @@
 #include <iostream>
 
 int main() {
-    cout<<"WIP";
+    std::cout<<"WIP"<<endl;
     return 0;
 }
