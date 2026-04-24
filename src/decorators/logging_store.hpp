@@ -2,12 +2,13 @@
 #include "istore.hpp"
 #include <memory>
 #include <chrono>
+#include <iostream>
 
 namespace miniRedis {
     
     class LoggingStore : public IStore {
         
-        std::shared_ptr<Istore> inner_;
+        std::shared_ptr<IStore> inner_;
         void log(const std::string &op, const std::string &key){
             std::cout<< "[LOG] " << op << ' ' << key << "\n";
         }
@@ -43,7 +44,7 @@ namespace miniRedis {
         void expire(const std::string &k, std::chrono::milliseconds t) override {
             inner_ -> expire(k, t);
         }
-        std::optional<int_64_t> ttl(const std::string &k) override {
+        std::optional<int64_t> ttl(const std::string &k) override {
             return inner_ -> ttl(k);
         }
         int64_t incr(const std::string &k) override {
@@ -58,5 +59,5 @@ namespace miniRedis {
         void flushAll() override {
             inner_ -> flushAll();
         }
-    }
+    };
 }
