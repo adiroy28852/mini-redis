@@ -7,7 +7,7 @@
 
 namespace miniRedis {
 
-    class Store : public Istore {
+    class Store : public IStore {
         
         std::unordered_map<std::string, Value> data_;
         std::unique_ptr<IEvictionPolicy> eviction_;
@@ -24,7 +24,7 @@ namespace miniRedis {
         bool del(const std::string& key) override;
         bool exists(const std::string& key) override;
         std::vector<std::string> keys(const std::string& pattern) override;
-        void expire(const std::string& k, std::chrono::millisecionds ttl) override;
+        void expire(const std::string& k, std::chrono::milliseconds ttl) override;
         std::optional<int64_t> ttl(const std::string& key) override;
         int64_t incr(const std::string &key) override;
         int64_t decr(const std::string &key) override;
