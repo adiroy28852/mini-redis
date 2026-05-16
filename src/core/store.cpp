@@ -41,9 +41,11 @@ namespace miniRedis {
     }
 
     std::optional<Value> Store::get(const std::string &key) {
-        std::shared_lock lock(mutex_); 
+        std::unique_lock lock(mutex_);  // Need exclusive lock for eviction_
         auto it = data_.find(key);
         if (it == end(data_)) return std::nullopt;
+        
+        if (it->second.isExpired()) return std::nullopt;  // Check expiry!
         
         if(eviction_) eviction_->onAccess(key);
         return it->second;

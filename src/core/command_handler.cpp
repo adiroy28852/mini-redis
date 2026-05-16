@@ -6,7 +6,7 @@
 namespace miniRedis {
 
     std::string CommandHandler::handle(const Command &cmd) {
-        if (!cmd.empty())
+        if (cmd.empty())
             return RespWriter::error("ERR empty command");
 
         std::string name = cmd.name();
@@ -31,7 +31,7 @@ namespace miniRedis {
     std::string CommandHandler::handlePing(const Command &cmd) {
         // blank PING = PONG
         // PING "abcde" = echo back "abcde"
-        if (cmd.args.size() == 1)
+        if (cmd.args.size() > 1)
             return RespWriter::bulkString(cmd.args[1]);
         return RespWriter::pong();
     }
