@@ -23,6 +23,7 @@ namespace miniRedis {
     public:
         explicit CommandHandler(std::shared_ptr<IStore> store) : store_(std::move(store)) {}
 
+        //convert parsed command to resp encoded response
         std::string handle(const Command &cmd);
     };
 }
