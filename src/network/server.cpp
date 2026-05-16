@@ -1,4 +1,4 @@
-#include "server.hpp"
+ #include "server.hpp"
 
 #include <iostream>
 #include <cerrno>
@@ -95,7 +95,7 @@ namespace miniRedis {
         char buf[BUFFER_SIZE];
         ssize_t n = read(client_fd, buf, sizeof(buf));
         if (n <= 0) {
-            removeClient(client_fd);
+            removeClient    (client_fd);
             return;
         }
         // TODO: feed buf[0..n) into RespParser and dispatch commands
@@ -105,6 +105,7 @@ namespace miniRedis {
     void TcpServer::removeClient(int client_fd) {
         epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, client_fd, nullptr);
         close(client_fd);
+        parsers_.erase(client_fd);
         std::cout << "[-] client " << client_fd << " disconnected\n";
     }
 }
