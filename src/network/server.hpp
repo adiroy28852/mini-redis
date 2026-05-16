@@ -10,6 +10,11 @@
 // for endianness
 #include <stdexcept>
 #include <cstring>
+#include <memory>
+#include<unordered_map>
+#include "../decorators/istore.hpp"
+#include "../protocol/resp_parser.hpp"
+#include "../core/command_handler.hpp"
 
 namespace miniRedis {
 
@@ -24,11 +29,16 @@ namespace miniRedis {
     public:
         explicit TcpServer(int port = PORT);
         ~TcpServer();
+        void setStore(std::shared_ptr<IStore> store);
         void run();
 
     private:
         int server_fd_{-1};
         int epoll_fd_{-1};
+
+        std::shared_ptr<IStore> store_;
+        std::unique_ptr<CommandHandler> handler_;
+        std::unordered_map<int, RespParser> parsers_; // 1 per client fd
 
         int createAndBindSocket(int port);
         void setNonBlocking(int fd);
