@@ -95,11 +95,21 @@ namespace miniRedis {
         char buf[BUFFER_SIZE];
         ssize_t n = read(client_fd, buf, sizeof(buf));
         if (n <= 0) {
-            removeClient    (client_fd);
+            removeClient(client_fd);
             return;
         }
-        // TODO: feed buf[0..n) into RespParser and dispatch commands
-        (void)n;
+        
+        auto& parser = parsers_[client_fd];
+        parser.feed(buf, n);
+        
+        while (auto cmd = parser.nextCommand()) {
+            std::string response = handler_->handle(*cmd);
+            ssize_t sent = write(client_fd, response.data(), response.size());
+            if (sent < 0) {
+                removeClient(client_fd);
+                return;
+            }
+        }
     }
 
     void TcpServer::removeClient(int client_fd) {
@@ -107,5 +117,10 @@ namespace miniRedis {
         close(client_fd);
         parsers_.erase(client_fd);
         std::cout << "[-] client " << client_fd << " disconnected\n";
+    }
+
+    void TcpServer::setStore(std::shared_ptr<IStore> store) {
+        store_ = std::move(store);
+        handler_ = std::make_unique<CommandHandler>(store_);
     }
 }
