@@ -184,7 +184,7 @@ LruPolicy          — O(1) eviction via linked list + hashmap
 ## Phase 2 — 
 
 
-**`MetricsStore` decorator** — tracks hit/miss rate and total op counts. Redis doesn't have a fancy beautiful dashboard, but the ([INFO command](https://redis.io/docs/latest/commands/info/))
+**`MetricsStore` decorator** — tracks hit/miss rate and total op counts. Redis doesn't have a fancy beautiful dashboard, but the [INFO command](https://redis.io/docs/latest/commands/info/)
 
 **LFU eviction policy** — LFU is LFU. If you don't know LFU, you should do ([this](https://leetcode.com/problems/lfu-cache/))
 **More Data Types** — List (and variants), Hashmap, Sets, Sortedsets(used in leaderboards) ...
@@ -199,5 +199,5 @@ LruPolicy          — O(1) eviction via linked list + hashmap
 **Consistent hashing ring** 
 **CLI** — Something I want to build separately, or as a part of mini-redis anyways. 
 **MULTI / EXEC** — transaction support. Queue commands per client connection, execute the whole batch atomically.
-**SUBSCRIBE / PUBLISH** — pub-sub messaging. Observer pattern — one subscriber list per channel, fan-out on publish.
+**SUBSCRIBE / PUBLISH** — pub-sub messaging.
 **Streams** — append-only log of entries with consumer groups. How Redis is used as a lightweight message queue in production.
