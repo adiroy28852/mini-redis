@@ -1,0 +1,4 @@
+Phase 1 was built on - 
+Processor: 11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz (12 CPUs), ~2.7GHz
+Memory: 8192MB RAM
+Available OS Memory: 7830MB RAM
