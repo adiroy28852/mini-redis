@@ -1,4 +1,4 @@
-# mini-redis
+# mini-redis (Phase 1 is now live!)
 
 A Redis-compatible in-memory key-value store built from scratch in C++17.
 
